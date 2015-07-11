@@ -36,7 +36,7 @@ $(document).ready(function(){
         $('ul#guessList').append("<li>" + userInput + "<li");
 
 // verify the user input ; number betwee 1-100
-//compare input to secret number and output 'hot' or 'cold' to div#feedback - default setting is 'make your guess!' text 
+
     function guessDifference() {
         return (Math.abs(userInput - secretNumber)); 
     }
