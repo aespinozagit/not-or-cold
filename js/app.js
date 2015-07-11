@@ -1,73 +1,118 @@
-
-
 $(document).ready(function(){
-
-	var  secretNumber, userimput, guessCounter = 0;
-
-	
-	/*--- Display information modal box ---*/
+        
+  var hiddenNumber = Math.floor((Math.random() * 100) + 1);
+    
+    /*--- Display information modal box ---*/
     $(".what").click(function(){
         $(".overlay").fadeIn(1000);
-     });
+
+    });
 
     /*--- Hide information modal box ---*/
     $("a.close").click(function(){
-      $(".overlay").fadeOut(1000); 
+        $(".overlay").fadeOut(1000);
     });
 
-/*--- Reload page on click---*/
-    $(".new").click(function(){
-    location.reload();
+    $("a.new").click(function(){
+        $("#guessList").find("li").remove();
+        $("#count").text("0");
+        $("#feedback").text("Make Your Guess!!");
+      document.getElementById('userGuess').value = "";
+      i = 0;
+      hiddenNumber = Math.floor((Math.random() * 100) + 1);
     });
 
-// Generate secret number
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    secretNumber =  getRandomInt(1, 100);
+    // function to get user input value
+    var inputNum = function(){
+        
+        var guessNum = document.getElementById("userGuess").value;
+        $("#guessList").append("<li>" + guessNum + "</li>");
+        document.getElementById('userGuess').value = "";
 
-// Get the user input, clear the form, and update guessCounter on submit of userInput
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-        userInput = $('#userGuess').val();
-        $(this)[0].reset();
-        guessCounter++;
-        $('#count').html((+guessCounter));
-        $('ul#guessList').append("<li>" + userInput + "<li");
+    };
 
-// verify the user input ; number betwee 1-100
+    var i = 0;
 
-    function guessDifference() {
-        return (Math.abs(userInput - secretNumber)); 
-    }
-    function insertFeedback (text) {
-        $('h2#feedback').replaceWith("<h2 id=\"feedback\">" + text +"</h2>"); 
-    }
-    if (isNaN(userInput)) {
-        insertFeedback("Enter a number between 1-100");
-    }
-    if ((100< userInput) || (userInput < 1)){
-        insertFeedback("Enter a number between 1-100");
-    }
-    if ((!isNaN(userInput))&&((0 < userInput) && (userInput < 101))) {
-        if (guessDifference() > 50) {
-            insertFeedback("You're Ice Cold!");
-
-        } else if (guessDifference() > 40) {
-            insertFeedback("You're Cold!");
-
-        } else if (guessDifference() > 30) {
-            insertFeedback("You're warm!");
-
-        } else if (guessDifference() > 10) {
-            insertFeedback("You're Hot!");
-            
-        } else if (guessDifference() >= 5) {
-            insertFeedback("You're Very Hot!");
-
-        } else if (guessDifference()=== 0){
-            insertFeedback("Great You Got It!");
+    var count = function(){
+        $("#count").text(+ i);
+    };
+    
+     var check = function(){
+        
+        var guessNum = document.getElementById("userGuess").value;
+        
+        if(!$.trim($('#userGuess').val())){
+            $("#feedback").text("Enter a number between 1-100");
+        } else if (guessNum < 1) {
+            $("#feedback").text("Enter a number between 1-100");
+        } else if (guessNum > 100) {
+            $("#feedback").text("Enter a number between 1-100");
+        } else if (guessNum > hiddenNumber && guessNum <= (hiddenNumber + 2)){
+        $("#feedback").text("You're Very Hot!");
+        i++;
+        count();
+        inputNum();
+      } else if (guessNum > hiddenNumber && guessNum < (hiddenNumber + 5)){
+        $("#feedback").text("You're Hot!");
+        i++;
+        count();
+        inputNum();
+      } else if (guessNum > hiddenNumber && guessNum < (hiddenNumber + 15)){
+        $("#feedback").text("You're warm!");
+        i++;
+        count();
+        inputNum();
+      } else if (guessNum > hiddenNumber && guessNum < (hiddenNumber + 25)){
+            $("#feedback").text("You're Cold!");
+            i++;
+            count();
+            inputNum();
+        } else if (guessNum < hiddenNumber && guessNum >= (hiddenNumber - 2)){
+        $("#feedback").text("You're Very Hot!");
+        i++;
+        count();
+        inputNum();
+      } else if (guessNum < hiddenNumber && guessNum > (hiddenNumber - 5)){
+        $("#feedback").text("You're Hot!");
+        i++;
+        count();
+        inputNum();
+      } else if (guessNum < hiddenNumber && guessNum > (hiddenNumber - 15)){
+        $("#feedback").text("You're warm!");
+        i++;
+        count();
+        inputNum();
+      } else if (guessNum < hiddenNumber && guessNum > (hiddenNumber - 25)){
+            $("#feedback").text("You're Cold!");
+            i++;
+            count();
+            inputNum();
+        } else if (guessNum >= (hiddenNumber + 30)){
+            $("#feedback").text("You're Ice Cold!");
+            i++;
+            count();
+            inputNum();
+        } else if (guessNum <= (hiddenNumber - 30)){
+            $("#feedback").text("You're Ice Cold!");
+            i++;
+            count();
+            inputNum();
+        } else {
+            $("#feedback").text("Great You Got It!");
+            i++;
+            count();
         }
-    }
+    };
+
+    $("#userGuess").on("keydown", function(e){
+        if(e.which == 13){
+            e.preventDefault();
+
+            check();
+        }
+    });
+
+    $("#guessButton").click(function(){
+        check();
     });
 });
